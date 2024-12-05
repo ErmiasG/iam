@@ -93,16 +93,7 @@ volumeMounts:
     mountPath: /tmp
     subPath: tmp-dir
   - name: empty-dir
-    mountPath: /opt/keycloak
-    subPath: app-volume-dir
-  - name: empty-dir
-    mountPath: /opt/keycloak/conf
-    subPath: app-conf-dir
-  - name: empty-dir
-    mountPath: /opt/keycloak/lib/quarkus
-    subPath: app-quarkus-dir
-  - name: empty-dir
-    mountPath: /opt/bitnami/keycloak/data
+    mountPath: /opt/keycloak/data
     subPath: app-data-dir
   - name: configuration-configmap
     mountPath: /resources/client.json
@@ -111,12 +102,15 @@ volumeMounts:
     mountPath: /resources/users.json
     subPath: users.json
 
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
-
 kcadmin:
   username: admin
   password: admin
+
+client:
+  id: "hopsworks-app"
+  name: "hopsworks-app"
+  description: "hopsworks employees"
+  rootUrl: "https://hopsworks.hopsworks.svc.cluster.local/"
+  secret: "da9d22be-dc88-457f-ac03-33789699e140"
+  consentRequired: false
+  redirectUris: ["https://hopsworks.hopsworks.svc.cluster.local/callback"]

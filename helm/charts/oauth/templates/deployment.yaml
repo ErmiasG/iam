@@ -34,10 +34,16 @@ spec:
         - name: configure
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ include "oauth.image_repository" . }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command:
-            - scripts/configure-keycloak.sh
+          command: 
+            - /bin/bash
+            - -c
+            - |
+              while true
+              do
+                sleep 10
+              done
           env:
           - name: KC_BOOTSTRAP_ADMIN_USERNAME
             value: {{ .Values.kcadmin.username }}
@@ -54,7 +60,7 @@ spec:
         - name: {{ .Chart.Name }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          image: "{{ include "oauth.image_repository" . }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - /opt/keycloak/bin/kc.sh

@@ -8,7 +8,7 @@ global:
   keytabConfigmap: &keytabs_configmap keytabs-configmap
 
   image:
-    repository: "docker.hops.works/dev/ermias/"
+    repository: "docker.hops.works/dev/ermias"
 
 kerberos:
   keytab:
