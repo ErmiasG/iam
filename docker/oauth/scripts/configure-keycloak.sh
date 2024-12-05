@@ -24,12 +24,3 @@ ${kcadmin} create roles -r $REALM -b '{"name": "Users", "description": "User pri
 
 ${kcadmin} create clients -r $REALM -f $CLIENT_JSON_PATH
 
-jq -c '.[]' $USERS_JSON_PATH| while read i; do
-  ${kcadmin} create users -r $REALM -b $i
-  username=$(jq -r '.username' <<< $i)
-  jq -r '.realmRoles[]' <<< $i| while read j; do
-    echo "adding user $username to group $j" 
-    ${kcadmin} add-roles -r $REALM --uusername $username --rolename $j
-  done
-done
-

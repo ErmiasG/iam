@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: keycloak
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
@@ -40,6 +40,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
+  name: keycloak
   type: ClusterIP
   port: 8080
 
@@ -51,7 +52,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: keycloak.local
+    - host: keycloak.hopsworks.svc.cluster.local # this needs to be resolvable from inside the cluster
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -104,7 +105,7 @@ volumeMounts:
 
 kcadmin:
   username: admin
-  password: admin
+  password: adminpw
 
 client:
   id: "hopsworks-app"
