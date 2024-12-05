@@ -24,3 +24,6 @@ ${kcadmin} create roles -r $REALM -b '{"name": "Users", "description": "User pri
 
 ${kcadmin} create clients -r $REALM -f $CLIENT_JSON_PATH
 
+jq -c '.[]' $USERS_JSON_PATH| while read i; do
+  ${kcadmin} create users -r $REALM -b $i
+done
