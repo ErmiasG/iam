@@ -1,0 +1,218 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: kerberos-high-priority
+value: 1000000
+globalDefault: false
+description: "This priority class should be used for kerberos pod only."
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kerberos.fullname" . }}
+  labels:
+    {{- include "kerberos.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "kerberos.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "kerberos.labels" . | nindent 8 }}
+	{{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      priorityClassName: kerberos-high-priority
+      serviceAccountName: {{ include "kerberos.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: reconfigure
+          image: "{{ include "kerberos.image_repository" . }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /scripts/krb-reconfigure-slapd.sh
+          env:
+          - name: LDAP_DOMAIN
+            value: {{ .Values.ldap.domain }}
+          - name: LDAP_OU
+            value: {{ .Values.ldap.ou }}
+          - name: ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "kerberos.fullname" . }}
+                key: master-password
+          volumeMounts:
+          - mountPath: /kerberos/acl.ldif
+            name: kdc-conf
+            subPath: acl.ldif
+{{ include "kerberos.volumeMountsLdap" . | indent 10 }}
+        - name: add-users
+          image: "{{ include "kerberos.image_repository" . }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |-
+              /scripts/start-slapd.sh
+              /scripts/add-users.sh /ldap/users.ldif
+              
+              kdb5_ldap_util -D cn=admin,{{ .Values.ldap.basedn }} -w $ADMIN_PASSWORD create -subtrees {{ .Values.ldap.basedn }} -r {{ .Values.krb5.default_realm | upper }} -s -H ldap:/// -P kdcdbkey
+
+              kdb5_ldap_util -D cn=admin,{{ .Values.ldap.basedn }} -w $ADMIN_PASSWORD stashsrvpw -f /var/kerberos/krb5kdc/service.keyfile cn=admin,{{ .Values.ldap.basedn }} <<EOF
+              $ADMIN_PASSWORD
+              $ADMIN_PASSWORD
+              EOF
+
+              /scripts/addprinc.sh /ldap/users.ldif
+          env:
+          - name: ADMIN_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "kerberos.fullname" . }}
+                key: master-password
+          volumeMounts:
+          - mountPath: /ldap/users.ldif
+            name: users-conf
+            subPath: users.ldif
+{{ include "kerberos.volumeMountsLdap" . | indent 10 }}
+{{ include "kerberos.volumeMountsKrb" . | indent 10 }}
+        - name: init-db
+          image: "{{ include "kerberos.image_repository" . }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |-
+              /scripts/start-slapd.sh
+              /init_db.sh "$(REALM)" "$(MASTER_PASSWORD)"
+          env:
+          - name: REALM
+            value: {{ .Values.krb5.default_realm | upper }}
+          - name: MASTER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "kerberos.fullname" . }}
+                key: master-password
+          volumeMounts:
+{{ include "kerberos.volumeMountsLdap" . | indent 10 }}
+{{ include "kerberos.volumeMountsKrb" . | indent 10 }}
+        - name: generate-keytab
+          image: "{{ include "kerberos.image_repository" . }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |-
+              /scripts/start-slapd.sh
+             
+              kadmin.local -q "addprinc -randkey HTTP/{{ .Values.global.serverName }}.{{ $.Release.Namespace }}.svc.cluster.local@{{ .Values.krb5.default_realm | upper }}"
+              kadmin.local -q "addprinc -randkey HTTP/localhost@{{ .Values.krb5.default_realm | upper }}"
+              kadmin.local -q "ktadd -k /tmp/http_srv.keytab HTTP/{{ .Values.global.serverName }}.{{ $.Release.Namespace }}.svc.cluster.local@{{ .Values.krb5.default_realm | upper }}"
+              kadmin.local -q "ktadd -k /tmp/http_srv.keytab HTTP/localhost@{{ .Values.krb5.default_realm | upper }}"
+              kadmin.local -q 'addprinc -randkey admin/admin'
+              kadmin.local -q "ktadd -k /tmp/admin.keytab admin/admin"
+
+              # delete
+              kubectl --namespace {{ .Release.Namespace }} delete secret {{ .Values.keytab.secretName }} --|| true
+
+              # create it if it does not exist
+              kubectl --namespace {{ .Release.Namespace }} create secret generic {{ .Values.keytab.secretName }} --from-file=service.keytab=/tmp/http_srv.keytab --from-file=admin.keytab=/tmp/admin.keytab  --|| true
+          env:
+          - name: REALM
+            value: {{ .Values.krb5.default_realm | upper }}
+          - name: MASTER_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: {{ template "kerberos.fullname" . }}
+                key: master-password
+          volumeMounts:
+{{ include "kerberos.volumeMountsLdap" . | indent 10 }}
+{{ include "kerberos.volumeMountsKrb" . | indent 10 }}
+      containers:
+      - name: ldap
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        image: "{{ include "kerberos.image_repository" . }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - slapd
+        args:
+          - -h
+          - "ldap:/// ldapi:///"
+          - -d
+          - "2"
+        ports:
+        - containerPort: {{ .Values.ldap.tcp.port }}
+          name: {{ .Values.ldap.tcp.name }}
+          protocol: TCP
+        livenessProbe:
+          tcpSocket:
+            port: {{ .Values.ldap.tcp.name }}
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          failureThreshold: 10
+        readinessProbe:
+          tcpSocket:
+            port: {{ .Values.ldap.tcp.name }}
+          initialDelaySeconds: 20
+          periodSeconds: 10
+          failureThreshold: 10
+        volumeMounts:
+{{ include "kerberos.volumeMountsLdap" . | indent 8 }}
+      - name: kdc
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        image: "{{ include "kerberos.image_repository" . }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command:
+          - /usr/sbin/krb5kdc
+        args:
+          - -n
+          - "$(KRB5KDC_ARGS)"
+        env:
+        - name: KRB5REALM
+          value: {{ .Values.krb5.default_realm | upper }}
+        - name: KRB5KDC_ARGS
+          value: "-w 2"
+        ports:
+        - containerPort: {{ .Values.kdc.udp.port }}
+          name: {{ .Values.kdc.udp.name }}
+          protocol: UDP
+        - containerPort: {{ .Values.kdc.tcp.port }}
+          name: {{ .Values.kdc.tcp.name }}
+          protocol: TCP
+        volumeMounts:
+{{ include "kerberos.volumeMountsLdap" . | indent 8 }}
+{{ include "kerberos.volumeMountsKrb" . | indent 8 }}
+      - name: kadmin
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+        image: "{{ include "kerberos.image_repository" . }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        command: ["/bin/sh", "-c"]
+        args:
+        - /usr/sbin/kadmind -nofork
+        ports:
+        - containerPort: 749
+          name: kadmin-tcp
+          protocol: TCP
+        - containerPort: 749
+          name: kadmin-udp
+          protocol: UDP
+        volumeMounts:
+{{ include "kerberos.volumeMountsLdap" . | indent 8 }}
+{{ include "kerberos.volumeMountsKrb" . | indent 8 }}
+      volumes:
+{{ include "kerberos.volumes" . | indent 6 }}

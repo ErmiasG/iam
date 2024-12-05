@@ -1,0 +1,17 @@
+[
+    {
+        "name": "dev/ermias/ldap/ldap",
+        "version": "env:VERSION",
+        "dockerFile": "docker/ldap/Dockerfile"
+    },
+    {
+        "name": "dev/ermias/kerberos/kerberos",
+        "version": "env:VERSION",
+        "dockerFile": "docker/kerberos/Dockerfile"
+    },
+    {
+        "name": "dev/ermias/oauth/keycloak",
+        "version": "env:VERSION",
+        "dockerFile": "docker/oauth/Dockerfile"
+    }
+]

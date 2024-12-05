@@ -1,0 +1,23 @@
+
+global:
+  realm:  &default_realm hopsworks.ai
+  basedn: &baseDN dc=hopsworks,dc=ai
+  adminName: &admin_name cn=admin,dc=hopsworks,dc=ai
+  adminPassword: &admin_password adminpw
+  serverName: &server_name hopsworks
+  keytabConfigmap: &keytabs_configmap keytabs-configmap
+
+  image:
+    repository: "docker.hops.works/dev/ermias/"
+
+kerberos:
+  keytab:
+    configmap: *keytabs_configmap
+  kdc:
+    password: *admin_password
+  krb5:
+    default_realm: *default_realm
+  ldap:
+    basedn: *baseDN
+    domain: *default_realm
+    ou: "Hopsworks Inc."

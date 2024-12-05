@@ -1,0 +1,59 @@
+[
+    {
+        "username": "alice",
+        "email": "alice@hopsworks.ai",
+        "emailVerified": true,
+        "firstName": "alice",
+        "lastName": "alice",
+        "enabled": true,
+        "credentials": [
+            {
+                "type": "password",
+                "value": "alice"
+            }
+        ],
+        "realmRoles": [
+            "Users"
+        ] 
+    },
+    {
+        "username": "jdoe",
+        "email": "jdoe@hopsworks.ai",
+        "emailVerified": false,
+        "firstName": "jdoe",
+        "lastName": "jdoe",
+        "enabled": true,
+        "credentials": [
+            {
+                "type": "password",
+                "value": "jdoe"
+            }
+        ],
+        "realmRoles": [
+            "Users"
+        ]
+    },
+    {
+        "username": "admin",
+        "email": "admin@hopsworks.ai",
+        "emailVerified": true,
+        "firstName": "admin",
+        "lastName": "admin",
+        "enabled": true,
+        "credentials": [
+            {
+                "type": "password",
+                "value": "admin"
+            }
+        ],
+        "realmRoles": [
+            "Users",
+            "Admins"
+        ],
+        "clientRoles": {
+            "realm-management": [
+                "realm-admin"
+            ]
+        }
+    }
+]

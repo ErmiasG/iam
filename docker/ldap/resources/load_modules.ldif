@@ -1,0 +1,13 @@
+dn: cn=module{1},cn=config
+changetype: modify
+add: olcmoduleload
+olcmoduleload: memberof
+-
+add: olcmoduleload
+olcmoduleload: refint
+-
+add: olcmoduleload
+olcmoduleload: autogroup
+-
+add: olcmoduleload
+olcmoduleload: dyngroup

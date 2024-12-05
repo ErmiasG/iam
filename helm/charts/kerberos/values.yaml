@@ -1,0 +1,117 @@
+# Default values for kerberos.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: kerberos
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Automatically mount a ServiceAccount's API credentials?
+  automount: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+podLabels: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+realm:  &default_realm example.com
+keytab:
+  secretName: keytab-secret
+
+krb5:
+  default_realm: *default_realm
+  lookup_realm: false
+  lookup_kdc: true
+  rdns: false
+  ticket_lifetime: 24h
+  forwardable: true
+  default_ccache_path: /tmp/ccache
+  default_ccache_file: krb5kdc_ccache
+  enc_types: >-
+    aes256-cts-hmac-sha1-96
+    aes256-cts-hmac-sha384-192
+    camellia256-cts-cmac
+    aes128-cts-hmac-sha1-96
+    aes128-cts-hmac-sha256-128
+    camellia128-cts-cmac
+
+kdc:
+  service: NodePort
+  udp:
+    port: 88
+    name: kdc-udp
+  tcp:
+    port: 88
+    name: kdc-tcp
+  restrict_anonymous: true
+  preauth_challenge: edwards25519
+  password: adminpw
+  persistence:
+    enabled: false
+    name: kerberos-db
+    storageClass: standard
+    size: 1Gi
+  # Explicitly define kdc db master password, else 40 char random string generated
+    password: password123
+
+kadmin:
+  service: NodePort
+  udp:
+    port: 749
+    name: kadmin-udp
+  tcp:
+    port: 749
+    name: kadmin-tcp
+
+ldap:
+  basedn: dc=example,dc=com
+  domain: *default_realm
+  ou: example
+  service: ClusterIP
+  tcp:
+    port: 389
+    name: ldap-tcp
+  persistence:
+    enabled: false
+    name: ldap-data
+    storageClass: standard
+    size: 1Gi
+
+resources:
+  limits:
+    cpu: 2000m
+    memory: 1024Mi
+  requests:
+    cpu: 1000m
+    memory: 512Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

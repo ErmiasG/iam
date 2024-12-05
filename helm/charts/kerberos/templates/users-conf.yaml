@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "kerberos.fullname" . }}-users-config
+  labels:
+    app: {{ template "kerberos.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+    component: kdc
+data:
+  users.ldif: |-
+{{ tpl (.Files.Get "resources/users.ldif") . | indent 8 }}
+    

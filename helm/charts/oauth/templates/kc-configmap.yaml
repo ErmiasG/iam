@@ -1,0 +1,98 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  labels:
+    app: {{ template "oauth.name" . }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    heritage: {{ .Release.Service }}
+    release: {{ .Release.Name }}
+  name: client-configuration
+data:
+  client.json: |-
+    {
+        "clientId": {{ .Values.client.id }},
+        "name": {{ .Values.client.name }},
+        "description": {{ .Values.client.description }},
+        "rootUrl": {{ .Values.client.rootUrl }},
+        "clientAuthenticatorType": "client-secret",
+        "secret": {{ .Values.client.secret }},
+        "publicClient": false,
+        "consentRequired": {{ .Values.client.consentRequired }},
+        "redirectUris": {{ .Values.redirectUris }},
+        "protocol": "openid-connect",
+        "defaultClientScopes": [
+            "web-origins",
+            "acr",
+            "profile",
+            "roles",
+            "basic",
+            "email"
+        ],
+        "optionalClientScopes": [
+            "address",
+            "phone",
+            "offline_access",
+            "organization",
+            "microprofile-jwt"
+        ]
+    }
+  users.json: |-
+    [
+        {
+            "username": "alice",
+            "email": "alice@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "alice",
+            "lastName": "alice",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "alice"
+                }
+            ],
+            "realmRoles": [
+                "Users"
+            ] 
+        },
+        {
+            "username": "jdoe",
+            "email": "jdoe@hopsworks.ai",
+            "emailVerified": false,
+            "firstName": "jdoe",
+            "lastName": "jdoe",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "jdoe"
+                }
+            ],
+            "realmRoles": [
+                "Users"
+            ]
+        },
+        {
+            "username": "admin",
+            "email": "admin@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "admin",
+            "lastName": "admin",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "admin"
+                }
+            ],
+            "realmRoles": [
+                "Users",
+                "Admins"
+            ],
+            "clientRoles": {
+                "realm-management": [
+                    "realm-admin"
+                ]
+            }
+        }
+    ]

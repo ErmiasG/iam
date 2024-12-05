@@ -1,0 +1,68 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name:  {{ template "kerberos.fullname" . }}-kdc
+  labels:
+    {{- include "kerberos.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.kdc.service }}
+  ports:
+    - port: {{ .Values.kdc.udp.port }}
+      targetPort: {{ .Values.kdc.udp.name }}
+      protocol: UDP
+      name: {{ .Values.kdc.udp.name }}
+    - port: {{ .Values.kdc.tcp.port }}
+      targetPort: {{ .Values.kdc.tcp.name }}
+      protocol: TCP
+      name: {{ .Values.kdc.tcp.name }}
+  selector:
+    {{- include "kerberos.selectorLabels" . | nindent 4 }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name:  {{ template "kerberos.fullname" . }}-kadmin
+  labels:
+    {{- include "kerberos.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.kadmin.service }}
+  ports:
+    - port: {{ .Values.kadmin.udp.port }}
+      targetPort: {{ .Values.kadmin.udp.name }}
+      protocol: UDP
+      name: {{ .Values.kadmin.udp.name }}
+    - port: {{ .Values.kadmin.tcp.port }}
+      targetPort: {{ .Values.kadmin.tcp.name }}
+      protocol: TCP
+      name: {{ .Values.kadmin.tcp.name }}
+  selector:
+    {{- include "kerberos.selectorLabels" . | nindent 4 }}
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name:  {{ template "kerberos.fullname" . }}-ldap
+{{- if .Values.ldap.standalone }}
+  labels:
+    {{- include "kerberos-ldap.labels" . | nindent 4 }}
+{{- else }}
+  labels:
+    {{- include "kerberos.labels" . | nindent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.ldap.service }}
+  ports:
+    - port: {{ .Values.ldap.tcp.port }}
+      targetPort: {{ .Values.ldap.tcp.name }}
+      protocol: TCP
+      name: {{ .Values.ldap.tcp.name }}
+  selector:
+{{- if .Values.ldap.standalone -}}
+    {{- include "kerberos-ldap.selectorLabels" . | nindent 4 }}
+{{- else }}
+    {{- include "kerberos.selectorLabels" . | nindent 4 }}
+{{- end -}}
