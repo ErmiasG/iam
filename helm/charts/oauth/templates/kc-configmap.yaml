@@ -42,8 +42,8 @@ data:
             "username": "alice",
             "email": "alice@hopsworks.ai",
             "emailVerified": true,
-            "firstName": "alice",
-            "lastName": "alice",
+            "firstName": "Alice",
+            "lastName": "Wallace",
             "enabled": true,
             "credentials": [
                 {
@@ -59,8 +59,8 @@ data:
             "username": "jdoe",
             "email": "jdoe@hopsworks.ai",
             "emailVerified": false,
-            "firstName": "jdoe",
-            "lastName": "jdoe",
+            "firstName": "Jdoe",
+            "lastName": "Walker",
             "enabled": true,
             "credentials": [
                 {
@@ -76,8 +76,8 @@ data:
             "username": "admin",
             "email": "admin@hopsworks.ai",
             "emailVerified": true,
-            "firstName": "admin",
-            "lastName": "admin",
+            "firstName": "Admin",
+            "lastName": "Admin",
             "enabled": true,
             "credentials": [
                 {
@@ -200,7 +200,7 @@ data:
             ] 
         },
         {
-            "username": "tobias",
+            "username": "tpierce",
             "email": "tpierce@hopsworks.ai",
             "emailVerified": true,
             "firstName": "Tobias",
@@ -217,7 +217,7 @@ data:
             ] 
         },
         {
-            "username": "torrey",
+            "username": "trigden",
             "email": "trigden@hopsworks.ai",
             "emailVerified": true,
             "firstName": "Torrey",
@@ -268,7 +268,7 @@ data:
             ] 
         },
         {
-            "username": "torrey",
+            "username": "ttully",
             "email": "ttully@hopsworks.ai",
             "emailVerified": true,
             "firstName": "Torrey",
