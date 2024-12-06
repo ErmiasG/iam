@@ -1,9 +1,9 @@
 #!/bin/bash
 
-REALM=${REALM:-"hopsworks05"}
+REALM=${REALM:-"hopsworks"}
 DESPLAY_NAME=${DESPLAY_NAME:-${REALM^^}}
 SERVER=${SERVER:-"http://keycloak.hopsworks.svc.cluster.local:8080"}
-APP_NAME="hopsworks-app"
+APP_NAME=${APP_NAME:-"hopsworks-app"}
 
 CLIENTS_JSON_PATH=${CLIENTS_JSON_PATH:-"resources/example-clients.json"}
 USERS_JSON_PATH=${USERS_JSON_PATH:-"resources/example-users.json"}

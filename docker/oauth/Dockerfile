@@ -21,6 +21,7 @@ RUN chown keycloak:keycloak scripts
 USER keycloak
 COPY resources/example-clients.json resources/example-clients.json
 COPY resources/example-groups.json resources/example-groups.json
+COPY resources/example-roles.json resources/example-roles.json
 COPY resources/example-users.json resources/example-users.json
 COPY resources/example-scopes.json resources/example-scopes.json
 
