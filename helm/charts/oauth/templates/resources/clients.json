@@ -1,0 +1,29 @@
+[
+  {
+    "clientId": {{ .Values.client.id | quote }},
+    "name": {{ .Values.client.name | quote }},
+    "description": {{ .Values.client.description | quote }},
+    "rootUrl": {{ .Values.client.rootUrl | quote }},
+    "clientAuthenticatorType": "client-secret",
+    "secret": {{ .Values.client.secret | quote }},
+    "publicClient": false,
+    "consentRequired": {{ .Values.client.consentRequired }},
+    "redirectUris": {{ .Values.client.redirectUris | toJson }},
+    "protocol": "openid-connect",
+    "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+    ],
+    "optionalClientScopes": [
+        "address",
+        "phone",
+        "offline_access",
+        "organization",
+        "microprofile-jwt"
+    ]
+  }
+]

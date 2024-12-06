@@ -62,8 +62,8 @@ spec:
               secretKeyRef:
                 name: {{ template "oauth.fullname" . }}
                 key: kcadmin-password
-          - name: CLIENT_JSON_PATH
-            value: /resources/client.json          
+          - name: CLIENTS_JSON_PATH
+            value: /resources/clients.json          
           - name: USERS_JSON_PATH
             value: /resources/users.json
           {{- with .Values.volumeMounts }}
