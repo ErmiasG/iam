@@ -3,7 +3,7 @@
 CLIENT_ID=${1:-"hopsworks-app"}
 CLIENT_SECRET=${2:-"da9d22be-dc88-457f-ac03-33789699e140"}
 
-curl -s "http://keycloak.hopsworks.svc.cluster.local:8080/realms/hopsworks/.well-known/openid-configuration" -o /tmp/openid-configuration.json
+curl -s "http://keycloak.hopsworks.svc.cluster.local:8080/realms/hopsworks9/.well-known/openid-configuration" -o /tmp/openid-configuration.json
 
 AUTH_ENDPOINT=$(jq -r '.authorization_endpoint' /tmp/openid-configuration.json)
 TOKEN_ENDPOINT=$(jq -r '.token_endpoint' /tmp/openid-configuration.json)
@@ -14,7 +14,7 @@ USERINFO_ENDPOINT=$(jq -r '.userinfo_endpoint' /tmp/openid-configuration.json)
 curl -s \
   -d "client_id=$CLIENT_ID" \
   -d "client_secret=$CLIENT_SECRET" \
-  -d "scope=openid+profile+email" \
+  -d "scope=openid+profile+email+groups+roles" \
   -d "username=admin@hopsworks.ai" \
   -d "password=adminpw" \
   -d "grant_type=password" \

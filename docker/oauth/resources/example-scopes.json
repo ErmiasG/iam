@@ -2,23 +2,48 @@
     {
         "name": "groups",
         "protocol": "openid-connect",
-        "description" : "OpenID Connect scope: groups",
+        "description": "OpenID Connect scope: groups",
         "protocolMappers": [
-          {
-            "name": "groups",
-            "protocol": "openid-connect",
-            "protocolMapper": "oidc-group-membership-mapper",
-            "consentRequired": false,
-            "config": {
-              "full.path": "true",
-              "id.token.claim": "false",
-              "lightweight.claim": "false",
-              "introspection.token.claim": "false",
-              "access.token.claim": "false",
-              "userinfo.token.claim": "true",
-              "claim.name" : "groups"
+            {
+                "name": "groups",
+                "protocol": "openid-connect",
+                "protocolMapper": "oidc-group-membership-mapper",
+                "consentRequired": false,
+                "config": {
+                    "full.path": "true",
+                    "id.token.claim": "false",
+                    "lightweight.claim": "false",
+                    "introspection.token.claim": "false",
+                    "access.token.claim": "false",
+                    "userinfo.token.claim": "true",
+                    "claim.name": "groups"
+                }
             }
-          }
         ]
-      }
+    },
+    {
+        "name": "roles",
+        "description": "OpenID Connect scope: roles",
+        "protocol": "openid-connect",
+        "attributes": {},
+        "protocolMappers": [
+            {
+                "name": "roles",
+                "protocol": "openid-connect",
+                "protocolMapper": "oidc-usermodel-client-role-mapper",
+                "consentRequired": false,
+                "config": {
+                    "introspection.token.claim": "false",
+                    "multivalued": "true",
+                    "userinfo.token.claim": "true",
+                    "id.token.claim": "false",
+                    "lightweight.claim": "false",
+                    "access.token.claim": "false",
+                    "claim.name": "roles",
+                    "jsonType.label": "String",
+                    "usermodel.clientRoleMapping.clientId": "hopsworks-app"
+                }
+            }
+        ]
+    }
 ]

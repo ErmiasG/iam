@@ -9,8 +9,497 @@ metadata:
   name: client-configuration
 data:
   clients.json: |-
-{{ tpl (.Files.Get "resources/clients.json") . | indent 8 }}
+    [
+        {
+            "clientId": {{ .Values.client.id | quote }},
+            "name": {{ .Values.client.name | quote }},
+            "description": {{ .Values.client.description | quote }},
+            "rootUrl": {{ .Values.client.rootUrl | quote }},
+            "clientAuthenticatorType": "client-secret",
+            "secret": {{ .Values.client.secret | quote }},
+            "publicClient": false,
+            "consentRequired": {{ .Values.client.consentRequired }},
+            "redirectUris": {{ .Values.client.redirectUris | toJson }},
+            "protocol": "openid-connect",
+            "defaultClientScopes": [
+                "web-origins",
+                "acr",
+                "profile",
+                "roles",
+                "basic",
+                "email"
+            ],
+            "optionalClientScopes": [
+                "address",
+                "phone",
+                "offline_access",
+                "organization",
+                "microprofile-jwt",
+                "groups"
+            ]
+        }
+    ]
   groups.json: |-
-{{ tpl (.Files.Get "resources/groups.json") . | indent 8 }} 
+    [
+        {
+            "name": "Admin"
+        },
+        {
+            "name": "User"
+        },
+        {
+            "name": "Manager"
+        },
+        {
+            "name": "ITpeople"
+        },
+        {
+            "name": "Human Resources"
+        },
+        {
+            "name": "Sales"
+        },
+        {
+            "name": "Auditors"
+        }
+    ]
+  scopes.json: |-
+    [
+        {
+            "name": "groups",
+            "protocol": "openid-connect",
+            "description": "OpenID Connect scope: groups",
+            "protocolMappers": [
+                {
+                    "name": "groups",
+                    "protocol": "openid-connect",
+                    "protocolMapper": "oidc-group-membership-mapper",
+                    "consentRequired": false,
+                    "config": {
+                        "full.path": "true",
+                        "id.token.claim": "false",
+                        "lightweight.claim": "false",
+                        "introspection.token.claim": "false",
+                        "access.token.claim": "false",
+                        "userinfo.token.claim": "true",
+                        "claim.name": "groups"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "roles",
+            "description": "OpenID Connect scope: roles",
+            "protocol": "openid-connect",
+            "attributes": {},
+            "protocolMappers": [
+                {
+                    "name": "roles",
+                    "protocol": "openid-connect",
+                    "protocolMapper": "oidc-usermodel-client-role-mapper",
+                    "consentRequired": false,
+                    "config": {
+                        "introspection.token.claim": "false",
+                        "multivalued": "true",
+                        "userinfo.token.claim": "true",
+                        "id.token.claim": "false",
+                        "lightweight.claim": "false",
+                        "access.token.claim": "false",
+                        "claim.name": "roles",
+                        "jsonType.label": "String",
+                        "usermodel.clientRoleMapping.clientId": {{ .Values.client.id | quote }}
+                    }
+                }
+            ]
+        }
+    ]
   users.json: |-
-{{ tpl (.Files.Get "resources/users.json") . | indent 8 }}    
+    [
+        {
+            "username": "alice",
+            "email": "alice@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Alice",
+            "lastName": "Wallace",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "aliceoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "Manager"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                    "User",
+                "Manager"
+                ]
+            }
+        },
+        {
+            "username": "jdoe",
+            "email": "jdoe@hopsworks.ai",
+            "emailVerified": false,
+            "firstName": "Jdoe",
+            "lastName": "Walker",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "jdoeoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "ITpeople"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "ITpeople"
+                ]
+            }
+        },
+        {
+            "username": "admin",
+            "email": "admin@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Admin",
+            "lastName": "Admin",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "adminpw"
+                }
+            ],
+            "groups": [
+                "/User",
+                "/Admin"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "/User",
+                "/Admin"
+                ]
+            }
+        },
+        {
+            "username": "john",
+            "email": "john@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "John",
+            "lastName": "Doe",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "johnoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "/Admin",
+                "Manager"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "/User",
+                "/Admin"
+                ]
+            }
+        },
+        {
+            "username": "george",
+            "email": "george@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "George",
+            "lastName": "Doe",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "georgeoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "/Admin",
+                "Manager"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                    "User",
+                    "Admin",
+                    "Manager"
+                ]
+            }
+        },
+        {
+            "username": "timothy",
+            "email": "tkelly@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Timothy",
+            "lastName": "Kelly",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "tkellyoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "ITpeople"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "ITpeople"
+                ]
+            }
+        },
+        {
+            "username": "tim",
+            "email": "tlabonte@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Tim",
+            "lastName": "Labonte",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "tlabonteoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "Human Resources"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "Human Resources"
+                ]
+            } 
+        },
+        {
+            "username": "torrey",
+            "email": "tmason@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Torrey",
+            "lastName": "Mason",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "tmasonoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "Sales"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "Sales"
+                ]
+            }  
+        },
+        {
+            "username": "ted",
+            "email": "tmorris@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Ted",
+            "lastName": "Morris",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "tmorrisoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "Sales"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "Sales"
+                ]
+            } 
+        },
+        {
+            "username": "tpierce",
+            "email": "tpierce@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Tobias",
+            "lastName": "Pierce",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "tpierceoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "ITpeople"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "ITpeople"
+                ]
+            }  
+        },
+        {
+            "username": "trigden",
+            "email": "trigden@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Torrey",
+            "lastName": "Rigden",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "trigdenoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "ITpeople"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "ITpeople"
+                ]
+            }  
+        },
+        {
+            "username": "tobias",
+            "email": "tschmith@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Tobias",
+            "lastName": "Schmith",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "tschmithoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "ITpeople"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "ITpeople"
+                ]
+            }  
+        },
+        {
+            "username": "torreys",
+            "email": "tschneid@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Torrey",
+            "lastName": "Schneider",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "tschneidoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "Sales"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "Sales"
+                ]
+            }  
+        },
+        {
+            "username": "ttully",
+            "email": "ttully@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Torrey",
+            "lastName": "Tully",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "ttullyoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "Sales"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "Sales"
+                ]
+            }  
+        },
+        {
+            "username": "tobiasw",
+            "email": "tward@hopsworks.ai",
+            "emailVerified": true,
+            "firstName": "Tobias",
+            "lastName": "Ward",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "twardoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "ITpeople"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "ITpeople"
+                ]
+            }  
+        },
+        {
+            "username": "wendy",
+            "email": "wlutzl@hotmail.com",
+            "emailVerified": true,
+            "firstName": "Wendy",
+            "lastName": "Lutz",
+            "enabled": true,
+            "credentials": [
+                {
+                    "type": "password",
+                    "value": "wlutzoauth"
+                }
+            ],
+            "groups": [
+                "/User",
+                "ITpeople"
+            ],
+            "clientRoles": {
+                {{ .Values.client.id | quote }}: [
+                "User",
+                "ITpeople"
+                ]
+            } 
+        }
+    ]   

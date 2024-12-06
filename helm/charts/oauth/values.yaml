@@ -97,11 +97,14 @@ volumeMounts:
     mountPath: /opt/keycloak/data
     subPath: app-data-dir
   - name: configuration-configmap
-    mountPath: /resources/client.json
-    subPath: client.json
+    mountPath: /resources/clients.json
+    subPath: clients.json
   - name: configuration-configmap
     mountPath: /resources/users.json
     subPath: users.json
+  - name: configuration-configmap
+    mountPath: /resources/groups.json
+    subPath: groups.json
 
 kcadmin:
   username: admin

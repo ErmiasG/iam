@@ -13,6 +13,22 @@
     },
     {
         "name": "Auditor",
-        "description": "Auditor privileges"
+        "description": "Auditor"
+    },
+    {
+        "name": "Manager",
+        "description": "Manager"
+    },
+    {
+        "name": "ITpeople",
+        "description": "ITpeople"
+    },
+    {
+        "name": "Human Resources",
+        "description": "Human Resources"
+    },
+    {
+        "name": "Sales",
+        "description": "Sales"
     }
 ]

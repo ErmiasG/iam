@@ -15,7 +15,13 @@
         "groups": [
             "/User",
             "Manager"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+                "User",
+               "Manager"
+            ]
+        }
     },
     {
         "username": "jdoe",
@@ -33,7 +39,13 @@
         "groups": [
             "/User",
             "ITpeople"
-        ]
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "ITpeople"
+            ]
+        }
     },
     {
         "username": "admin",
@@ -53,8 +65,9 @@
             "/Admin"
         ],
         "clientRoles": {
-            "realm-management": [
-                "realm-admin"
+            "hopsworks-app": [
+              "User",
+              "Admin"
             ]
         }
     },
@@ -75,7 +88,14 @@
             "/User",
             "/Admin",
             "Manager"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "Admin",
+              "Manager"
+            ]
+        }
     },
     {
         "username": "george",
@@ -94,7 +114,14 @@
             "/User",
             "/Admin",
             "Manager"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "Admin",
+              "Manager"
+            ]
+        }
     },
     {
         "username": "timothy",
@@ -112,7 +139,13 @@
         "groups": [
             "/User",
             "ITpeople"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "ITpeople"
+            ]
+        }
     },
     {
         "username": "tim",
@@ -130,7 +163,13 @@
         "groups": [
             "/User",
             "Human Resources"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "Human Resources"
+            ]
+        } 
     },
     {
         "username": "torrey",
@@ -148,7 +187,13 @@
         "groups": [
             "/User",
             "Sales"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "Sales"
+            ]
+        }  
     },
     {
         "username": "ted",
@@ -166,7 +211,13 @@
         "groups": [
             "/User",
             "Sales"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "Sales"
+            ]
+        } 
     },
     {
         "username": "tpierce",
@@ -184,7 +235,13 @@
         "groups": [
             "/User",
             "ITpeople"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "ITpeople"
+            ]
+        }  
     },
     {
         "username": "trigden",
@@ -202,7 +259,13 @@
         "groups": [
             "/User",
             "ITpeople"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "ITpeople"
+            ]
+        }  
     },
     {
         "username": "tobias",
@@ -220,7 +283,13 @@
         "groups": [
             "/User",
             "ITpeople"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "ITpeople"
+            ]
+        }  
     },
     {
         "username": "torreys",
@@ -238,7 +307,13 @@
         "groups": [
             "/User",
             "Sales"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "Sales"
+            ]
+        }  
     },
     {
         "username": "ttully",
@@ -256,7 +331,13 @@
         "groups": [
             "/User",
             "Sales"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "Sales"
+            ]
+        }  
     },
     {
         "username": "tobiasw",
@@ -274,7 +355,13 @@
         "groups": [
             "/User",
             "ITpeople"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "ITpeople"
+            ]
+        }  
     },
     {
         "username": "wendy",
@@ -292,6 +379,12 @@
         "groups": [
             "/User",
             "ITpeople"
-        ] 
+        ],
+        "clientRoles": {
+            "hopsworks-app": [
+              "User",
+              "ITpeople"
+            ]
+        } 
     }
-]
+]   

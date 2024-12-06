@@ -17,7 +17,6 @@
       "web-origins",
       "acr",
       "profile",
-      "roles",
       "basic",
       "email"
     ],
@@ -27,6 +26,7 @@
       "offline_access",
       "organization",
       "microprofile-jwt",
+      "roles",
       "groups"
     ]
   }
