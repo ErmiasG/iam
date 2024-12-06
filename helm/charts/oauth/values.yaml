@@ -105,6 +105,12 @@ volumeMounts:
   - name: configuration-configmap
     mountPath: /resources/groups.json
     subPath: groups.json
+  - name: configuration-configmap
+    mountPath: /resources/roles.json
+    subPath: roles.json
+  - name: configuration-configmap
+    mountPath: /resources/scopes.json
+    subPath: scopes.json
 
 kcadmin:
   username: admin

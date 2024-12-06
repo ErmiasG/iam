@@ -3,7 +3,7 @@
 REALM=${REALM:-"hopsworks"}
 DESPLAY_NAME=${DESPLAY_NAME:-${REALM^^}}
 SERVER=${SERVER:-"http://keycloak.hopsworks.svc.cluster.local:8080"}
-APP_NAME=${APP_NAME:-"hopsworks-app"}
+CLIENT_ID=${CLIENT_ID:-"hopsworks-app"}
 
 CLIENTS_JSON_PATH=${CLIENTS_JSON_PATH:-"resources/example-clients.json"}
 USERS_JSON_PATH=${USERS_JSON_PATH:-"resources/example-users.json"}
@@ -34,8 +34,8 @@ ${kcadmin} delete client-scopes/$SCOPE_ID -r $REALM
 _create_in_realm $SCOPES_JSON_PATH "-x client-scopes"
 _create_in_realm $CLIENTS_JSON_PATH "clients"
 
-CLIENT_ID=$(${kcadmin} get clients -r $REALM -q clientId=$APP_NAME --fields id | jq -c -r '.[].id')
-_create_in_realm $ROLES_JSON_PATH "clients/$CLIENT_ID/roles"
+ID=$(${kcadmin} get clients -r $REALM -q clientId=$CLIENT_ID --fields id | jq -c -r '.[].id')
+_create_in_realm $ROLES_JSON_PATH "clients/$ID/roles"
 
 _create_in_realm $GROUPS_JSON_PATH "groups"
 
@@ -44,8 +44,8 @@ if [ -s $USERS_JSON_PATH ]; then
     ${kcadmin} create users -r $REALM -b "$i"
     USERNAME=$(jq -c -r '.username' <<< "$i")
     CLIENT_ROLES=$(jq -c -r '.clientRoles' <<< "$i")
-    jq -c -r ".\"$APP_NAME\"[]" <<< $CLIENT_ROLES | while read j; do
-      ${kcadmin} add-roles -r $REALM --uusername $USERNAME --cclientid $APP_NAME --rolename "$j"
+    jq -c -r ".\"$CLIENT_ID\"[]" <<< $CLIENT_ROLES | while read j; do
+      ${kcadmin} add-roles -r $REALM --uusername $USERNAME --cclientid $CLIENT_ID --rolename "$j"
     done
   done
 fi

@@ -63,6 +63,41 @@ data:
             "name": "Auditors"
         }
     ]
+  roles.json: |-
+    [
+        {
+            "name": "Admin",
+            "description": "Administrator privileges"
+        },
+        {
+            "name": "User",
+            "description": "User privileges"
+        },
+        {
+            "name": "Tester",
+            "description": "Tester privileges"
+        },
+        {
+            "name": "Auditor",
+            "description": "Auditor"
+        },
+        {
+            "name": "Manager",
+            "description": "Manager"
+        },
+        {
+            "name": "ITpeople",
+            "description": "ITpeople"
+        },
+        {
+            "name": "Human Resources",
+            "description": "Human Resources"
+        },
+        {
+            "name": "Sales",
+            "description": "Sales"
+        }
+    ]
   scopes.json: |-
     [
         {

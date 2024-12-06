@@ -68,6 +68,12 @@ spec:
             value: /resources/users.json
           - name: GROUPS_JSON_PATH
             value: /resources/groups.json
+          - name: ROLES_JSON_PATH
+            value: /resources/roles.json
+          - name: SCOPES_JSON_PATH
+            value: /resources/scopes.json
+          - name: CLIENT_ID
+            value: {{ .Values.client.id | quote }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
