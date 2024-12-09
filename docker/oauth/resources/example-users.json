@@ -19,7 +19,7 @@
         "clientRoles": {
             "hopsworks-app": [
                 "User",
-               "Manager"
+                "Manager"
             ]
         }
     },

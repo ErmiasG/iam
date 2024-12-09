@@ -2,7 +2,7 @@
 
 REALM=${REALM:-"hopsworks"}
 DESPLAY_NAME=${DESPLAY_NAME:-${REALM^^}}
-SERVER=${SERVER:-"http://keycloak.hopsworks.svc.cluster.local:8080"}
+SERVER=${SERVER:-"http://localhost:8080"}
 CLIENT_ID=${CLIENT_ID:-"hopsworks-app"}
 
 CLIENTS_JSON_PATH=${CLIENTS_JSON_PATH:-"resources/example-clients.json"}
@@ -44,8 +44,12 @@ if [ -s $USERS_JSON_PATH ]; then
     ${kcadmin} create users -r $REALM -b "$i"
     USERNAME=$(jq -c -r '.username' <<< "$i")
     CLIENT_ROLES=$(jq -c -r '.clientRoles' <<< "$i")
-    jq -c -r ".\"$CLIENT_ID\"[]" <<< $CLIENT_ROLES | while read j; do
-      ${kcadmin} add-roles -r $REALM --uusername $USERNAME --cclientid $CLIENT_ID --rolename "$j"
+    jq -c -r '. | to_entries' <<< $CLIENT_ROLES | while read j; do
+      C_ID=$(jq -c -r '.[].key' <<< $j)
+      ROLES=$(jq -c -r '.[].value' <<< $j)
+      jq -c -r '.[]' <<< $ROLES | while read k; do
+        ${kcadmin} add-roles -r $REALM --uusername $USERNAME --cclientid $C_ID --rolename "$k"
+      done
     done
   done
 fi
