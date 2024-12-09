@@ -45,8 +45,8 @@ if [ -s $USERS_JSON_PATH ]; then
     USERNAME=$(jq -c -r '.username' <<< "$i")
     CLIENT_ROLES=$(jq -c -r '.clientRoles' <<< "$i")
     jq -c -r '. | to_entries' <<< $CLIENT_ROLES | while read j; do
-      C_ID=$(jq -c -r '.[].key' <<< $j)
-      ROLES=$(jq -c -r '.[].value' <<< $j)
+      C_ID=$(jq -c -r '.[].key' <<< "$j")
+      ROLES=$(jq -c -r '.[].value' <<< "$j")
       jq -c -r '.[]' <<< $ROLES | while read k; do
         ${kcadmin} add-roles -r $REALM --uusername $USERNAME --cclientid $C_ID --rolename "$k"
       done
