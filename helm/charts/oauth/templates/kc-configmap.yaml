@@ -25,7 +25,34 @@ data:
                 "web-origins",
                 "acr",
                 "profile",
-                "roles",
+                "basic",
+                "email"
+            ],
+            "optionalClientScopes": [
+                "address",
+                "phone",
+                "offline_access",
+                "organization",
+                "microprofile-jwt",
+                "groups",
+                "roles"
+            ]
+        },
+        {
+            "clientId": {{ .Values.client.id | quote }}0,
+            "name": {{ .Values.client.name | quote }}0,
+            "description": {{ .Values.client.description | quote }},
+            "rootUrl": {{ .Values.client.rootUrl | quote }},
+            "clientAuthenticatorType": "client-secret",
+            "secret": {{ .Values.client.secret | quote }},
+            "publicClient": false,
+            "consentRequired": {{ .Values.client.consentRequired }},
+            "redirectUris": {{ .Values.client.redirectUris | toJson }},
+            "protocol": "openid-connect",
+            "defaultClientScopes": [
+                "web-origins",
+                "acr",
+                "profile",
                 "basic",
                 "email"
             ],
@@ -170,7 +197,7 @@ data:
             "clientRoles": {
                 {{ .Values.client.id | quote }}: [
                     "User",
-                "Manager"
+                    "Manager"
                 ]
             }
         },
