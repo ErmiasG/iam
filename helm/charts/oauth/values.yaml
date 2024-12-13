@@ -81,12 +81,12 @@ autoscaling:
   # targetMemoryUtilizationPercentage: 80
 
 # Additional volumes on the output Deployment definition.
-volumes: 
- - name: empty-dir
-   emptyDir: {}
- - name: configuration-configmap
-   configMap:
-    name: client-configuration
+volumes:
+  - name: empty-dir
+    emptyDir: {}
+  - name: configuration-configmap
+    configMap:
+      name: client-configuration
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:
@@ -116,11 +116,51 @@ kcadmin:
   username: admin
   password: adminpw
 
-client:
-  id: "hopsworks-app"
-  name: "hopsworks-app"
-  description: "hopsworks employees"
-  rootUrl: "https://hopsworks.hopsworks.svc.cluster.local/"
-  secret: "da9d22be-dc88-457f-ac03-33789699e140"
-  consentRequired: false
-  redirectUris: ["https://hopsworks.hopsworks.svc.cluster.local/callback"]
+clients:
+  - id: "hopsworks-app0"
+    name: "hopsworks-app0"
+    description: "hopsworks employees"
+    rootUrl: "https://hopsworks.hopsworks.svc.cluster.local/"
+    secret: "da9d22be-dc88-457f-ac03-33789699e140"
+    consentRequired: false
+    redirectUris:
+      [
+        "https://hopsworks.hopsworks.svc.cluster.local",
+        "https://hopsworks.hopsworks.svc.cluster.local/callback",
+      ]
+    defaultClientScopes: ["web-origins", "acr", "profile", "basic", "email"]
+    optionalClientScopes:
+      [
+        "address",
+        "phone",
+        "offline_access",
+        "organization",
+        "microprofile-jwt",
+        "groups"
+      ]
+  - id: "hopsworks-app"
+    name: "hopsworks-app"
+    description: "hopsworks employees"
+    rootUrl: "https://hopsworks.hopsworks.svc.cluster.local/"
+    secret: "da9d22be-dc88-457f-ac03-33789699e140"
+    consentRequired: false
+    redirectUris:
+      [
+        "https://hopsworks.hopsworks.svc.cluster.local",
+        "https://hopsworks.hopsworks.svc.cluster.local/callback",
+      ]
+    defaultClientScopes: ["web-origins", "acr", "profile", "basic", "email"]
+    optionalClientScopes:
+      [
+        "address",
+        "phone",
+        "offline_access",
+        "organization",
+        "microprofile-jwt",
+        "groups",
+        "roles",
+      ]
+
+# optionalClientScopes contains roles
+defaultClientId: "hopsworks-app"
+    

@@ -73,7 +73,7 @@ spec:
           - name: SCOPES_JSON_PATH
             value: /resources/scopes.json
           - name: CLIENT_ID
-            value: {{ .Values.client.id | quote }}
+            value: {{ .Values.defaultClientId | quote }}
           {{- with .Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}

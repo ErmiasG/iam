@@ -10,61 +10,23 @@ metadata:
 data:
   clients.json: |-
     [
+    {{- range $i, $client := .Values.clients }}
+        {{- if (gt $i 0) }},{{- end }}
         {
-            "clientId": {{ .Values.client.id | quote }},
-            "name": {{ .Values.client.name | quote }},
-            "description": {{ .Values.client.description | quote }},
-            "rootUrl": {{ .Values.client.rootUrl | quote }},
+            "clientId": {{ $client.id | quote }},
+            "name": {{ $client.name | quote }},
+            "description": {{ $client.description | quote }},
+            "rootUrl": {{ $client.rootUrl | quote }},
             "clientAuthenticatorType": "client-secret",
-            "secret": {{ .Values.client.secret | quote }},
+            "secret": {{ $client.secret | quote }},
             "publicClient": false,
-            "consentRequired": {{ .Values.client.consentRequired }},
-            "redirectUris": {{ .Values.client.redirectUris | toJson }},
+            "consentRequired": {{ $client.consentRequired }},
+            "redirectUris": {{ $client.redirectUris | toJson }},
             "protocol": "openid-connect",
-            "defaultClientScopes": [
-                "web-origins",
-                "acr",
-                "profile",
-                "basic",
-                "email"
-            ],
-            "optionalClientScopes": [
-                "address",
-                "phone",
-                "offline_access",
-                "organization",
-                "microprofile-jwt",
-                "groups",
-                "roles"
-            ]
-        },
-        {
-            "clientId": {{ .Values.client.id | quote }}0,
-            "name": {{ .Values.client.name | quote }}0,
-            "description": {{ .Values.client.description | quote }},
-            "rootUrl": {{ .Values.client.rootUrl | quote }},
-            "clientAuthenticatorType": "client-secret",
-            "secret": {{ .Values.client.secret | quote }},
-            "publicClient": false,
-            "consentRequired": {{ .Values.client.consentRequired }},
-            "redirectUris": {{ .Values.client.redirectUris | toJson }},
-            "protocol": "openid-connect",
-            "defaultClientScopes": [
-                "web-origins",
-                "acr",
-                "profile",
-                "basic",
-                "email"
-            ],
-            "optionalClientScopes": [
-                "address",
-                "phone",
-                "offline_access",
-                "organization",
-                "microprofile-jwt",
-                "groups"
-            ]
+            "defaultClientScopes": {{ $client.defaultClientScopes | toJson }},
+            "optionalClientScopes": {{ $client.optionalClientScopes | toJson }}
         }
+    {{- end }}
     ]
   groups.json: |-
     [
@@ -153,7 +115,6 @@ data:
             "name": "roles",
             "description": "OpenID Connect scope: roles",
             "protocol": "openid-connect",
-            "attributes": {},
             "protocolMappers": [
                 {
                     "name": "roles",
@@ -169,7 +130,7 @@ data:
                         "access.token.claim": "false",
                         "claim.name": "roles",
                         "jsonType.label": "String",
-                        "usermodel.clientRoleMapping.clientId": {{ .Values.client.id | quote }}
+                        "usermodel.clientRoleMapping.clientId": {{ .Values.defaultClientId | quote }}
                     }
                 }
             ]
@@ -195,7 +156,7 @@ data:
                 "Manager"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
+                {{ .Values.defaultClientId | quote }}: [
                     "User",
                     "Manager"
                 ]
@@ -219,9 +180,9 @@ data:
                 "ITpeople"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "ITpeople"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "ITpeople"
                 ]
             }
         },
@@ -243,9 +204,9 @@ data:
                 "/Admin"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "/User",
-                "/Admin"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "Admin"
                 ]
             }
         },
@@ -268,9 +229,9 @@ data:
                 "Manager"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "/User",
-                "/Admin"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "Admin"
                 ]
             }
         },
@@ -293,7 +254,7 @@ data:
                 "Manager"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
+                {{ .Values.defaultClientId | quote }}: [
                     "User",
                     "Admin",
                     "Manager"
@@ -318,9 +279,9 @@ data:
                 "ITpeople"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "ITpeople"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "ITpeople"
                 ]
             }
         },
@@ -342,9 +303,9 @@ data:
                 "Human Resources"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "Human Resources"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "Human Resources"
                 ]
             } 
         },
@@ -366,9 +327,9 @@ data:
                 "Sales"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "Sales"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "Sales"
                 ]
             }  
         },
@@ -390,9 +351,9 @@ data:
                 "Sales"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "Sales"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "Sales"
                 ]
             } 
         },
@@ -414,9 +375,9 @@ data:
                 "ITpeople"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "ITpeople"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "ITpeople"
                 ]
             }  
         },
@@ -438,9 +399,9 @@ data:
                 "ITpeople"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "ITpeople"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "ITpeople"
                 ]
             }  
         },
@@ -462,9 +423,9 @@ data:
                 "ITpeople"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "ITpeople"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "ITpeople"
                 ]
             }  
         },
@@ -486,9 +447,9 @@ data:
                 "Sales"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "Sales"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "Sales"
                 ]
             }  
         },
@@ -510,9 +471,9 @@ data:
                 "Sales"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "Sales"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "Sales"
                 ]
             }  
         },
@@ -534,9 +495,9 @@ data:
                 "ITpeople"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "ITpeople"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "ITpeople"
                 ]
             }  
         },
@@ -558,9 +519,9 @@ data:
                 "ITpeople"
             ],
             "clientRoles": {
-                {{ .Values.client.id | quote }}: [
-                "User",
-                "ITpeople"
+                {{ .Values.defaultClientId | quote }}: [
+                  "User",
+                  "ITpeople"
                 ]
             } 
         }

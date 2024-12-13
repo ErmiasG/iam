@@ -60,3 +60,5 @@ buildNumber.properties
 reset.sh
 Notes
 kc-cli.sh
+template.yaml
+test_oauth-login.sh
