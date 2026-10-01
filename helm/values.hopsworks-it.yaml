@@ -1,0 +1,30 @@
+global:
+  serverName: hopsworks-release
+  serverNamespace: hopsworks
+
+oauth:
+  ingress:
+    enabled: false
+  clients:
+    - id: hopsworks-app
+      name: hopsworks-app
+      description: Hopsworks integration tests with roles
+      rootUrl: https://hopsworks-release.hopsworks.svc.cluster.local/
+      secret: da9d22be-dc88-457f-ac03-33789699e140
+      consentRequired: false
+      directAccessGrantsEnabled: true
+      redirectUris:
+        - https://hopsworks-release.hopsworks.svc.cluster.local/hopsworks/callback
+      defaultClientScopes: [web-origins, acr, profile, basic, email]
+      optionalClientScopes: [address, phone, offline_access, organization, microprofile-jwt, groups, roles]
+    - id: hopsworks-app0
+      name: hopsworks-app0
+      description: Hopsworks integration tests without roles
+      rootUrl: https://hopsworks-release.hopsworks.svc.cluster.local/
+      secret: da9d22be-dc88-457f-ac03-33789699e140
+      consentRequired: false
+      directAccessGrantsEnabled: true
+      redirectUris:
+        - https://hopsworks-release.hopsworks.svc.cluster.local/hopsworks/callback
+      defaultClientScopes: [web-origins, acr, profile, basic, email]
+      optionalClientScopes: [address, phone, offline_access, organization, microprofile-jwt, groups]

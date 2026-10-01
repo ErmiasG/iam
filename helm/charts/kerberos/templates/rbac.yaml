@@ -1,33 +1,29 @@
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
+kind: Role
 metadata:
-  name: {{ template "kerberos.fullname" . }}-cluster-role
+  name: {{ template "kerberos.fullname" . }}-keytabs
 rules:
   - apiGroups:
       - ""
     resources:
-      - endpoints
-      - pods
-      - nodes
-      - services
-      - configmaps
       - secrets
     verbs:
-      - get
-      - list
       - create
-      - delete
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: [{{ .Values.keytab.secretName | quote }}]
+    verbs: ["get", "patch"]
 
 ---
 
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
-  name: {{ template "kerberos.fullname" . }}-cluster-role-binding
+  name: {{ template "kerberos.fullname" . }}-keytabs
 roleRef:
   apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: {{ template "kerberos.fullname" . }}-cluster-role
+  kind: Role
+  name: {{ template "kerberos.fullname" . }}-keytabs
 subjects:
   - kind: ServiceAccount
     name: {{ include "kerberos.serviceAccountName" . }}

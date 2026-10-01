@@ -1,7 +1,7 @@
 ARG VERSION=0.2.0
-FROM docker.hops.works/dev/ermias/ldap/ldap:${VERSION}
+FROM docker.hops.works/dev/ermias/iam/ldap:${VERSION}
 
-RUN apt-get update && \   
+RUN apt-get update && \
     apt-get -qqy install krb5-kdc krb5-admin-server krb5-kdc-ldap 
 
 RUN mkdir -p /etc/ldap/schema && \
