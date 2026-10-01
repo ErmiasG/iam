@@ -10,6 +10,9 @@ Requires Helm 3, kubectl, jq, and a configured Kubernetes context. Build/push
 the changed Docker images first using each Dockerfile's directory as its build
 context; use a new tag and override both chart image tags when deploying.
 The Kerberos build depends on the LDAP image of the same VERSION.
+Images are published under `docker.hops.works/dev/ermias/iam/` with names
+`ldap`, `kerberos`, and `keycloak`; `global.image.repository` sets this shared
+prefix for the umbrella chart.
 
 ```bash
 bash scripts/deploy.sh -f helm/values.hopsworks-it.yaml \

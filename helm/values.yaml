@@ -8,7 +8,7 @@ global:
   keytabSecretName: &keytabs_secret keytab-secret
 
   image:
-    repository: "docker.hops.works/dev/ermias"
+    repository: "docker.hops.works/dev/ermias/iam"
 
 kerberos:
   fullnameOverride: kerberos
