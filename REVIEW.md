@@ -55,6 +55,7 @@ so its authentication service reloads the credentials.
 | Low | LDAP password expansion and missing-file handling were unsafe | Quoted password arguments and fail-fast missing-file handling |
 | High | Generated SSHA hashes containing `/` broke LDAP password substitution | Used a delimiter outside the hash alphabet |
 | High | Retried LDAP fixture import stopped at the first existing OU or user | Import individual LDIF entries in order; skip only LDAP result 68 and fail on other errors |
+| High | Autogroup adds `member` to ITpeople, but `groupOfURLs` does not permit that attribute | Added the `extensibleObject` auxiliary class to this test fixture so computed members are schema-valid |
 
 ## Remaining risks and follow-up work
 
