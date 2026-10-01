@@ -54,6 +54,7 @@ so its authentication service reloads the credentials.
 | Low | Empty JSON templates failed subchart lint | Removed empty template placeholders |
 | Low | LDAP password expansion and missing-file handling were unsafe | Quoted password arguments and fail-fast missing-file handling |
 | High | Generated SSHA hashes containing `/` broke LDAP password substitution | Used a delimiter outside the hash alphabet |
+| High | Retried LDAP fixture import stopped at the first existing OU or user | Import individual LDIF entries in order; skip only LDAP result 68 and fail on other errors |
 
 ## Remaining risks and follow-up work
 
@@ -63,8 +64,9 @@ so its authentication service reloads the credentials.
    not expose it publicly or reuse credentials elsewhere. Production requires
    TLS, externally managed Secrets, database storage, and Keycloak production
    configuration. The Kerberos account uses LDAP administrator privileges.
-2. **High: restart/persistence semantics.** LDAP reconfiguration, user creation,
-   and principal creation are not reconciliations. A retry after partial LDAP
+2. **High: restart/persistence semantics.** LDAP reconfiguration, realm creation,
+   and principal creation are not reconciliations. LDAP fixture import skips
+   existing entries without changing their attributes. A retry after partial LDAP
    bootstrap or reusing persistent LDAP data may fail or mutate existing data.
    Persistence values reference PVCs but the chart does not provision them.
    Keep persistence disabled; recreate a failed test deployment deliberately.
