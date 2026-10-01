@@ -44,7 +44,7 @@ recreation because the keytabs change.
 ```bash
 helm test iam --namespace iam
 bash scripts/test-oauth.sh -i hopsworks-app -u admin@hopsworks.ai -p adminpw
-bash scripts/test-oauth.sh -i hopsworks-app0 -u alice@hopsworks.ai -p aliceoauth
+bash scripts/test-oauth.sh -i hopsworks-app -u alice@hopsworks.ai -p aliceoauth
 kubectl --namespace iam exec deployment/kerberos -c kdc -- \
   kadmin.local -q 'getprinc HTTP/hopsworks-release.hopsworks.svc.cluster.local@HOPSWORKS.AI'
 ```

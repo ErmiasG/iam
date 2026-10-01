@@ -37,7 +37,7 @@ CLIENT_SECRET=${CLIENT_SECRET:-"da9d22be-dc88-457f-ac03-33789699e140"}
 USEREMAIL=${USEREMAIL:-"admin@hopsworks.ai"}
 USERPWD=${USERPWD:-"adminpw"}
 
-KEYCLOAK_URL=${KEYCLOAK_URL:-http://keycloak.iam.svc.cluster.local:8080}
+KEYCLOAK_URL=${KEYCLOAK_URL:-http://keycloak.hopsworks.svc.cluster.local/}
 WORK_DIR=$(mktemp -d)
 trap 'rm -rf "$WORK_DIR"' EXIT
 
