@@ -1,13 +1,11 @@
 #!/bin/bash
 
-export KUBECONFIG=/home/ermias/Projects/Kube/dev2/kubeconfig.yaml
-NAMESPACE=hopsworks
-CHARTS=/home/ermias/Projects/ErmiasG/iam/helm
+set -euo pipefail
 
-kubectl create namespace $NAMESPACE
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+NAMESPACE=${NAMESPACE:-iam}
+RELEASE=${RELEASE:-iam}
+CHARTS=${CHARTS:-"$SCRIPT_DIR/../helm"}
 
-helm install kerberos-release $CHARTS/charts/kerberos --namespace $NAMESPACE --values $CHARTS/values.yaml
-helm install oauth-release $CHARTS/charts/oauth --namespace $NAMESPACE --values $CHARTS/values.yaml
-
-#helm uninstall kerberos-release --namespace $NAMESPACE
-#helm uninstall oauth-release --namespace $NAMESPACE
+helm upgrade --install "$RELEASE" "$CHARTS" \
+  --namespace "$NAMESPACE" --create-namespace --wait --timeout 10m "$@"

@@ -3,6 +3,7 @@
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
+priorityClassName: ""
 
 image:
   repository: keycloak
@@ -18,7 +19,7 @@ serviceAccount:
   # Specifies whether a service account should be created
   create: true
   # Automatically mount a ServiceAccount's API credentials?
-  automount: true
+  automount: false
   # Annotations to add to the service account
   annotations: {}
   # The name of the service account to use.
@@ -47,8 +48,7 @@ service:
 ingress:
   enabled: true
   className: nginx
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
@@ -116,6 +116,8 @@ kcadmin:
   username: admin
   password: adminpw
 
+realm: hopsworks
+
 clients:
   - id: "hopsworks-app0"
     name: "hopsworks-app0"
@@ -163,4 +165,3 @@ clients:
 
 # optionalClientScopes contains roles
 defaultClientId: "hopsworks-app"
-    

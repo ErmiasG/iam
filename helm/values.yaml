@@ -1,15 +1,19 @@
 
 global:
+  serverName: hopsworks-release
+  serverNamespace: hopsworks
   realm:  &default_realm hopsworks.ai
   basedn: &baseDN dc=hopsworks,dc=ai
   adminPassword: &admin_password adminpw
   keytabSecretName: &keytabs_secret keytab-secret
 
   image:
-    repository: "docker.hops.works/dev/ermias/hopsworks/test"
+    repository: "docker.hops.works/dev/ermias"
 
 kerberos:
   fullnameOverride: kerberos
+  image:
+    tag: "0.2.0"
   keytab:
     secretName: *keytabs_secret
   kdc:
@@ -22,3 +26,5 @@ kerberos:
     ou: "Hopsworks Inc."
 oauth:
   fullnameOverride: oauth
+  image:
+    tag: "0.2.0"

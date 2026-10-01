@@ -20,6 +20,8 @@ data:
             "clientAuthenticatorType": "client-secret",
             "secret": {{ $client.secret | quote }},
             "publicClient": false,
+            "standardFlowEnabled": true,
+            "directAccessGrantsEnabled": {{ $client.directAccessGrantsEnabled | default false }},
             "consentRequired": {{ $client.consentRequired }},
             "redirectUris": {{ $client.redirectUris | toJson }},
             "protocol": "openid-connect",
@@ -100,7 +102,7 @@ data:
                     "protocolMapper": "oidc-group-membership-mapper",
                     "consentRequired": false,
                     "config": {
-                        "full.path": "true",
+                        "full.path": "false",
                         "id.token.claim": "false",
                         "lightweight.claim": "false",
                         "introspection.token.claim": "false",
@@ -525,4 +527,4 @@ data:
                 ]
             } 
         }
-    ]   
+    ]
