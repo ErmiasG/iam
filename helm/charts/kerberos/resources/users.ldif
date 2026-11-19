@@ -330,5 +330,6 @@ cn: HR Managers
 
 dn: cn=ITpeople,ou=groups,{{ .Values.ldap.basedn }}
 objectclass: groupOfURLs
+objectClass: extensibleObject
 cn: ITpeople
 memberURL: ldap:///ou=People,{{ .Values.ldap.basedn }}??sub?(ou=IT)

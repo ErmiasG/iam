@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "oauth.fullname" . }}:{{ .Values.service.port }}']
+      args: ['-O', '/dev/null', 'http://{{ .Values.service.name }}:{{ .Values.service.port }}/realms/{{ .Values.realm }}/.well-known/openid-configuration']
   restartPolicy: Never

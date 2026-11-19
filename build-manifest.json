@@ -1,12 +1,14 @@
 [
     {
-        "name": "dev/ermias/ldap/ldap",
+        "name": "dev/ermias/iam/ldap",
         "version": "env:VERSION",
+        "excludeRegistries": ["ecr_prod", "public_ecr_dev", "public_ecr_prod"],
         "dockerFile": "docker/ldap/Dockerfile"
     },
     {
-        "name": "dev/ermias/kerberos/kerberos",
+        "name": "dev/ermias/iam/kerberos",
         "version": "env:VERSION",
+        "excludeRegistries": ["ecr_prod", "public_ecr_dev", "public_ecr_prod"],
         "variables": [
             "VERSION"
         ],
@@ -14,8 +16,9 @@
         "dockerFile": "docker/kerberos/Dockerfile"
     },
     {
-        "name": "dev/ermias/oauth/keycloak",
+        "name": "dev/ermias/iam/keycloak",
         "version": "env:VERSION",
+        "excludeRegistries": ["ecr_prod", "public_ecr_dev", "public_ecr_prod"],
         "dockerFile": "docker/oauth/Dockerfile"
     }
 ]

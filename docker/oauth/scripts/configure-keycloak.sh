@@ -1,7 +1,9 @@
 #!/bin/bash
 
+set -euo pipefail
+
 REALM=${REALM:-"hopsworks"}
-DESPLAY_NAME=${DESPLAY_NAME:-${REALM^^}}
+DISPLAY_NAME=${DISPLAY_NAME:-${DESPLAY_NAME:-${REALM^^}}}
 SERVER=${SERVER:-"http://localhost:8080"}
 CLIENT_ID=${CLIENT_ID:-"hopsworks-app"}
 
@@ -17,38 +19,38 @@ KC_BOOTSTRAP_ADMIN_PASSWORD=${KC_BOOTSTRAP_ADMIN_PASSWORD:-"adminpw"}
 kcadmin=/opt/keycloak/bin/kcadm.sh
 
 _create_in_realm() {
-  if [ -s $1 ]; then
-    jq -c '.[]' $1 | while read i; do
-      ${kcadmin} create $2 -r $REALM -b "$i"
+  local json_path=$1
+  shift
+  if [ -s "$json_path" ]; then
+    jq -c '.[]' "$json_path" | while IFS= read -r entry; do
+      "${kcadmin}" create "$@" -r "$REALM" -b "$entry"
     done
   fi
 }
 
-${kcadmin} config credentials --server $SERVER --realm master --user $KC_BOOTSTRAP_ADMIN_USERNAME --password $KC_BOOTSTRAP_ADMIN_PASSWORD
+${kcadmin} config credentials --server "$SERVER" --realm master --user "$KC_BOOTSTRAP_ADMIN_USERNAME" --password "$KC_BOOTSTRAP_ADMIN_PASSWORD"
 
-${kcadmin} create realms -s realm=$REALM -s displayName=$DESPLAY_NAME -s enabled=true
+${kcadmin} create realms -s "realm=$REALM" -s "displayName=$DISPLAY_NAME" -s enabled=true
 
 SCOPE_ID=$(${kcadmin} get client-scopes -r $REALM --fields id,name | jq -c -r '.[] | select(.name == "roles") | .id')
 ${kcadmin} delete client-scopes/$SCOPE_ID -r $REALM 
 
-_create_in_realm $SCOPES_JSON_PATH "-x client-scopes"
-_create_in_realm $CLIENTS_JSON_PATH "clients"
+_create_in_realm "$SCOPES_JSON_PATH" -x client-scopes
+_create_in_realm "$CLIENTS_JSON_PATH" clients
 
 ID=$(${kcadmin} get clients -r $REALM -q clientId=$CLIENT_ID --fields id | jq -c -r '.[].id')
-_create_in_realm $ROLES_JSON_PATH "clients/$ID/roles"
+_create_in_realm "$ROLES_JSON_PATH" "clients/$ID/roles"
 
-_create_in_realm $GROUPS_JSON_PATH "groups"
+_create_in_realm "$GROUPS_JSON_PATH" groups
 
-if [ -s $USERS_JSON_PATH ]; then
-  jq -c '.[]' $USERS_JSON_PATH | while read i; do
-    ${kcadmin} create users -r $REALM -b "$i"
-    USERNAME=$(jq -c -r '.username' <<< "$i")
-    CLIENT_ROLES=$(jq -c -r '.clientRoles' <<< "$i")
-    jq -c -r '. | to_entries' <<< $CLIENT_ROLES | while read j; do
-      C_ID=$(jq -c -r '.[].key' <<< "$j")
-      ROLES=$(jq -c -r '.[].value' <<< "$j")
-      jq -c -r '.[]' <<< $ROLES | while read k; do
-        ${kcadmin} add-roles -r $REALM --uusername $USERNAME --cclientid $C_ID --rolename "$k"
+if [ -s "$USERS_JSON_PATH" ]; then
+  jq -c '.[]' "$USERS_JSON_PATH" | while IFS= read -r entry; do
+    ${kcadmin} create users -r "$REALM" -b "$entry"
+    USERNAME=$(jq -r '.username' <<< "$entry")
+    jq -c '(.clientRoles // {}) | to_entries[]' <<< "$entry" | while IFS= read -r mapping; do
+      C_ID=$(jq -r '.key' <<< "$mapping")
+      jq -r '.value[]' <<< "$mapping" | while IFS= read -r role; do
+        ${kcadmin} add-roles -r "$REALM" --uusername "$USERNAME" --cclientid "$C_ID" --rolename "$role"
       done
     done
   done

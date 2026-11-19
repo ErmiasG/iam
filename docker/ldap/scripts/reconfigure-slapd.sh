@@ -28,8 +28,8 @@ dpkg-reconfigure -f noninteractive slapd
 
 /scripts/start-slapd.sh
 
-SSHA_PWD=$(slappasswd -h {SSHA} -s $PASSWORD)
-sed -i -e "s/^olcRootPW: XXXXXX/olcRootPW: $SSHA_PWD/" /ldap/config.ldif
+SSHA_PWD=$(slappasswd -h {SSHA} -s "$PASSWORD")
+sed -i -e "s|^olcRootPW: XXXXXX|olcRootPW: $SSHA_PWD|" /ldap/config.ldif
 ldapadd -Q -Y EXTERNAL -H ldapi:/// -f /ldap/config.ldif
 
 slapcat -f /ldap/schema_convert.conf -F /tmp/ldif_output -n0 -s "cn={5}dyngroup,cn=schema,cn=config" > /tmp/cn=dyngroup.ldif
